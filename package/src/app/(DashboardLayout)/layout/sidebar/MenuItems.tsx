@@ -31,6 +31,12 @@ const Menuitems = [
     icon: IconTypography,
     href: "/utilities/inferences",
   },
+      {
+    id: uniqueId(),
+    title: "Visualization",
+    icon: IconTypography,
+    href: "/utilities/visualization",
+  },
   {
     id: uniqueId(),
     title: "Typography",
