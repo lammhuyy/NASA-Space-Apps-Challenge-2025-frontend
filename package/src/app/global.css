@@ -1,0 +1,10 @@
+*{
+     font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif !important;
+}
+
+.sidebar-logo-box img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
