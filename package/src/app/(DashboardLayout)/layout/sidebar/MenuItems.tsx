@@ -25,13 +25,13 @@ const Menuitems = [
     navlabel: true,
     subheader: "UTILITIES",
   },
-    {
+  {
     id: uniqueId(),
     title: "Inferences",
     icon: IconTypography,
     href: "/utilities/inferences",
   },
-      {
+  {
     id: uniqueId(),
     title: "Visualization",
     icon: IconTypography,
