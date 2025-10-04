@@ -15,6 +15,12 @@ export interface FindByHostnameResponse {
     data: PlanetData[];
 }
 
+export interface FindByHostidResponse {
+    kepid: number;
+    total_rows: number;
+    data: PlanetData[];
+}
+
 export interface LightcurveData {
     time: number[];
     flux: number[];
@@ -24,6 +30,11 @@ export interface LightcurveData {
 export interface HostnamesResponse {
     total_hostnames: number;
     hostnames: string[];
+}
+
+export interface HostidsResponse {
+    total_ids: number;
+    hostids: string[];
 }
 
 class ApiService {
@@ -109,12 +120,20 @@ class ApiService {
         const response = await this.request<HostnamesResponse>('/visualization/hostnames');
         return response.hostnames;
     }
+    async getAllHostids(): Promise<string[]> {
+        const response = await this.request<HostidsResponse>('/visualization/hostids');
+        return response.hostids;
+    }
 
     /**
      * Find all rows with matching kepid based on the given hostname
      */
     async findByHostname(hostname: string): Promise<FindByHostnameResponse> {
         return this.request<FindByHostnameResponse>(`/visualization/find_by_hostname/${encodeURIComponent(hostname)}`);
+    }
+
+    async findByHostId(hostid: string): Promise<FindByHostidResponse> {
+        return this.request<FindByHostidResponse>(`/visualization/find_by_kepid/${encodeURIComponent(hostid)}`);
     }
 
     /**

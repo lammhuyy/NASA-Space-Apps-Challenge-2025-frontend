@@ -67,8 +67,10 @@ function HostStars({ count = 2000 }) {
           key={i}
           args={[s.radius, 12, 12]}
           position={s.position as [number, number, number]}
-          onClick={() => {
-            const randomId = Math.floor(Math.random() * 10000); // pick range you want
+          onClick={async () => {
+            // const randomId = Math.floor(Math.random() * 10000); // pick range you want
+            const results = await apiService.getAllHostids();
+            const randomId = results[Math.floor(Math.random() * results.length)];
             router.push(`/utilities/visualization/${randomId}`);
           }}
         >
