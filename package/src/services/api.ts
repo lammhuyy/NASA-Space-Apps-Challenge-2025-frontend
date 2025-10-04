@@ -8,6 +8,13 @@ export interface PlanetData {
     [key: string]: any;
 }
 
+export interface FindByHostnameResponse {
+    hostname: string;
+    kepid: number;
+    total_rows: number;
+    data: PlanetData[];
+}
+
 export interface LightcurveData {
     time: number[];
     flux: number[];
@@ -106,8 +113,8 @@ class ApiService {
     /**
      * Find all rows with matching kepid based on the given hostname
      */
-    async findByHostname(hostname: string): Promise<PlanetData[]> {
-        return this.request<PlanetData[]>(`/visualization/find_by_hostname/${encodeURIComponent(hostname)}`);
+    async findByHostname(hostname: string): Promise<FindByHostnameResponse> {
+        return this.request<FindByHostnameResponse>(`/visualization/find_by_hostname/${encodeURIComponent(hostname)}`);
     }
 
     /**
