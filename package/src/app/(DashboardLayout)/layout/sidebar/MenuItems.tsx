@@ -23,6 +23,28 @@ const Menuitems = [
   },
   {
     navlabel: true,
+    subheader: "DATA",
+  },
+  {
+    id: uniqueId(),
+    title: "Datasets",
+    icon: IconTypography,
+    href: "/data/datasets",
+  },
+  {
+    id: uniqueId(),
+    title: "Models",
+    icon: IconTypography,
+    href: "/data/models",
+  },
+  {
+    id: uniqueId(),
+    title: "Retrain",
+    icon: IconTypography,
+    href: "/data/retrain",
+  },
+  {
+    navlabel: true,
     subheader: "UTILITIES",
   },
   {
