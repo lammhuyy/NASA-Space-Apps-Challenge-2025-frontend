@@ -3,6 +3,8 @@
 Bringing distant worlds a little closer to home.  
 We are six Computer Science students from the University of Science, VNU-HCM, building open, intuitive tools that turn exoplanet data into discovery.
 
+Note: The current UI depends on backend services that are not yet included in this repository. Some features will not work until the ML/API backend is added. We will supplement these services soon.
+
 ---
 
 ## Overview
@@ -10,7 +12,7 @@ We are six Computer Science students from the University of Science, VNU-HCM, bu
 OuterHomes is our submission for the 2025 NASA Space Apps Challenge: “A World Away: Hunting for Exoplanets with AI.”
 
 Our solution unites:
-1) An interactive light-curve visualization platform that animates multi-planet orbits in real time and links dips in brightness to orbital events, with searchable access to Kepler, K2, and TESS exoplanets.
+1) An interactive light-curve visualization platform that animates multi-planet orbits in real time and links dips in brightness to orbital events, with searchable access to Kepler, K2, and TESS exoplanets.  
 2) An adaptive machine learning and dataset management system that lets researchers mix datasets, bring or select base models, track dataset–model lineage, and reproduce results with confidence.
 
 Together, these systems bridge exploration and analysis—helping both newcomers and scientists understand, simulate, and identify exoplanets at scale.
@@ -33,6 +35,8 @@ Home is where things make sense. We can’t move the stars closer, but we can br
 - Exportable reports, metrics, and model cards for reproducibility
 - Web-first, accessible UI for learners and researchers
 
+Backend-dependent features: search, dataset upload, model training, and lineage views require the forthcoming ML/API service.
+
 ---
 
 ## Tech Stack
@@ -42,7 +46,7 @@ Home is where things make sense. We can’t move the stars closer, but we can br
 - Data Ops: Parquet/Arrow, DVC/MLflow for versioning and experiments
 - Infra: Docker; GPU-ready training; REST/Graph endpoints
 
-Note: This repository may include a Next.js admin template (Modernize) as a scaffold for dashboards and management pages.
+Note: This repository may use a Next.js admin template (Modernize) as a scaffold for dashboards and management pages.
 
 ---
 
@@ -51,7 +55,7 @@ Note: This repository may include a Next.js admin template (Modernize) as a scaf
 Prerequisites:
 - Node.js LTS
 - npm or pnpm
-- Python 3.10+ (for ML services)
+- Python 3.10+ (planned, for ML services)
 - Docker (optional, for containerized runs)
 
 1) Clone
@@ -65,20 +69,18 @@ cd package
 npm install
 ```
 
-3) Run frontend
+3) Run frontend (UI only; backend features disabled)
 ```bash
 npm run dev
 ```
 
----
+Planned backend will expose REST endpoints for:
+- /planets (search/browse)
+- /lightcurves (ingest/fetch)
+- /train, /predict (model lifecycle)
+- /lineage (dataset–model provenance)
 
-## Project Structure (suggested)
-
-- apps/web — Next.js app (visualization, UI, dashboards)
-- services/ml — Model training, inference API, dataset manager
-- data/ — Sample datasets, schema, and preprocessing scripts
-- docs/ — Model cards, architecture diagrams, experiment logs
-- scripts/ — Dev tooling, data ingestion, CI helpers
+Stubs or environment flags may temporarily disable these calls until services are added.
 
 ---
 
