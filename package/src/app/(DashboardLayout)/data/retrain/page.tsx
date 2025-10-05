@@ -76,6 +76,7 @@ const METHOD_CONFIGS: Record<
   extratrees: { label: 'ExtraTrees', accepts: ['n_estimators', 'max_depth'] },
   extremelyrandomizedtrees: { label: 'Extremely Randomized Trees', accepts: ['n_estimators', 'max_depth'] },
   et: { label: 'ET (alias)', accepts: ['n_estimators', 'max_depth'] },
+  lightgbm: { label: 'Light Gradient Boosting', accepts: ['n_estimators', 'learning_rate']}
 };
 
 function PreviewTable({ rows, maxRows = 10 }: { rows?: any[]; maxRows?: number }) {

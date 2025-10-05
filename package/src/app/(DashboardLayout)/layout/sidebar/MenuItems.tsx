@@ -1,11 +1,12 @@
 import {
-  IconAperture,
+  IconDatabase,
   IconCopy,
   IconLayoutDashboard,
   IconLogin,
-  IconMoodHappy,
-  IconTypography,
+  IconRouteSquare2,
+  IconReplace,
   IconUserPlus,
+  IconPlanet,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -28,48 +29,30 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: "Datasets",
-    icon: IconTypography,
+    icon: IconDatabase,
     href: "/data/datasets",
   },
   {
     id: uniqueId(),
     title: "Models",
-    icon: IconTypography,
+    icon: IconRouteSquare2,
     href: "/data/models",
   },
   {
     id: uniqueId(),
     title: "Retrain",
-    icon: IconTypography,
+    icon: IconReplace,
     href: "/data/retrain",
   },
   {
     navlabel: true,
-    subheader: "UTILITIES",
+    subheader: "VISUALIZATION",
   },
   {
     id: uniqueId(),
-    title: "Inferences",
-    icon: IconTypography,
-    href: "/utilities/inferences",
-  },
-  {
-    id: uniqueId(),
-    title: "Visualization",
-    icon: IconTypography,
+    title: "Orbit Visualizer",
+    icon: IconPlanet,
     href: "/utilities/visualization",
-  },
-  {
-    id: uniqueId(),
-    title: "Typography",
-    icon: IconTypography,
-    href: "/utilities/typography",
-  },
-  {
-    id: uniqueId(),
-    title: "Shadow",
-    icon: IconCopy,
-    href: "/utilities/shadow",
   },
   {
     navlabel: true,
@@ -86,24 +69,7 @@ const Menuitems = [
     title: "Register",
     icon: IconUserPlus,
     href: "/authentication/register",
-  },
-  {
-    navlabel: true,
-    subheader: " EXTRA",
-  },
-  {
-    id: uniqueId(),
-    title: "Icons",
-    icon: IconMoodHappy,
-    href: "/icons",
-  },
-  {
-    id: uniqueId(),
-    title: "Sample Page",
-    icon: IconAperture,
-    href: "/sample-page",
-  },
-
+  }
 ];
 
 export default Menuitems;
