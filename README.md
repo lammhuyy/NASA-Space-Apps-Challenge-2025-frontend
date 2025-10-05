@@ -1,92 +1,139 @@
-<div align="center">
-   <a href="https://adminmart.com/" target="_blank">
-      <img src="https://adminmart.github.io/template_api/images/brand-logo/adminmart-Logo.svg" alt="modernize-image" width="100px" height="80px">
-   </a>
-</div>
+# OuterHomes — A World Away, Closer to Home
 
-# [Modernize Free Next Js Admin Template](https://modernize-nextjs-free.vercel.app/)
-
-<!-- Main image of Template -->
-[![Next Js](https://adminmart.com/wp-content/uploads/2023/03/modernize-free-next-js-admin-template.png)](#)
-
-    
-# Modernize Free Next.js Admin Template
-
-A free, developer-friendly admin dashboard template built using **Next.js (v15)**, **Material UI (MUI v7)**, **React**, and **TypeScript**.  
-It provides a clean project structure, responsive design, and ready-made pages such as Dashboard, Login/Register, Typography, and Sample pages.  
-Distributed under the **MIT license**, it’s free for both personal and commercial use.
+Bringing distant worlds a little closer to home.  
+We are six Computer Science students from the University of Science, VNU-HCM, building open, intuitive tools that turn exoplanet data into discovery.
 
 ---
 
-## ✨ Features
+## Overview
 
-- ⚡ Built with **Next.js 15**, **React**, **TypeScript**, and **MUI 7**
-- 📱 Fully responsive design
-- 🗂️ Organized folder structure
-- 🔑 Authentication pages (Login, Signup)
-- 📊 Dashboard, Typography, Sample layout pages
-- 🆓 Free under **MIT license**
-- 🚀 Lightweight and production-ready
+OuterHomes is our submission for the 2025 NASA Space Apps Challenge: “A World Away: Hunting for Exoplanets with AI.”
+
+Our solution unites:
+1) An interactive light-curve visualization platform that animates multi-planet orbits in real time and links dips in brightness to orbital events, with searchable access to Kepler, K2, and TESS exoplanets.
+2) An adaptive machine learning and dataset management system that lets researchers mix datasets, bring or select base models, track dataset–model lineage, and reproduce results with confidence.
+
+Together, these systems bridge exploration and analysis—helping both newcomers and scientists understand, simulate, and identify exoplanets at scale.
 
 ---
 
-## 🚀 Getting Started
+## Why “OuterHomes”?
 
-### 1. Clone the repository
+Home is where things make sense. We can’t move the stars closer, but we can bring understanding closer. OuterHomes turns distant data into familiar patterns—so anyone can feel at home reading the sky.
+
+---
+
+## Key Features
+
+- Real-time orbit and transit simulations with synchronized light curves
+- Search, filter, and visualize exoplanets from Kepler, K2, and TESS
+- Upload and combine datasets; manage data–model relationships
+- Bring-your-own-model (BYOM) or pick curated baselines
+- Transparent lineage: which datasets trained which models, when, and how
+- Exportable reports, metrics, and model cards for reproducibility
+- Web-first, accessible UI for learners and researchers
+
+---
+
+## Tech Stack
+
+- Frontend: Next.js, React, TypeScript, MUI, WebGL/Canvas, D3
+- ML/Backend: Python, PyTorch/TF, scikit-learn, XGBoost
+- Data Ops: Parquet/Arrow, DVC/MLflow for versioning and experiments
+- Infra: Docker; GPU-ready training; REST/Graph endpoints
+
+Note: This repository may include a Next.js admin template (Modernize) as a scaffold for dashboards and management pages.
+
+---
+
+## Getting Started
+
+Prerequisites:
+- Node.js LTS
+- npm or pnpm
+- Python 3.10+ (for ML services)
+- Docker (optional, for containerized runs)
+
+1) Clone
 ```bash
-git clone https://github.com/adminmart/Modernize-Nextjs-Free.git
+git clone <repo-url>
+cd package
 ```
 
-### 2. Navigate to the project
-```bash
-cd Modernize-Nextjs-Free/package
-```
-
-### 3. Install dependencies
+2) Install frontend
 ```bash
 npm install
 ```
 
-### 4. Run in development mode
+3) Run frontend
 ```bash
 npm run dev
 ```
 
-### 5. Build for production
-```bash
-npm run build
-```
-## 📂 Pages Included
+---
 
-- Dashboard  
-- Login & Signup  
-- Typography  
-- Sample Layout  
+## Project Structure (suggested)
+
+- apps/web — Next.js app (visualization, UI, dashboards)
+- services/ml — Model training, inference API, dataset manager
+- data/ — Sample datasets, schema, and preprocessing scripts
+- docs/ — Model cards, architecture diagrams, experiment logs
+- scripts/ — Dev tooling, data ingestion, CI helpers
 
 ---
 
+## User Journeys
 
-## 📊 Summary Table
+- Explorers (Novices)
+  - Visualize orbits; see how transits form light curves
+  - Compare planets by radius, period, and duration
+  - Save and share interactive scenes
 
-| Aspect           | Details                                                 |
-|------------------|---------------------------------------------------------|
-| Framework        | Next.js (v15), React, TypeScript, Material UI (v7)      |
-| Pages Included   | Dashboard, Login/Register, Typography, Sample           |
-| Design           | Responsive, MUI-styled, clean and modern                |
-| License          | MIT – Free for personal and commercial use              |
-| Getting Started  | Clone → npm install → npm run dev → npm run build       |
-| Pro Version      | 65+ pages, NextAuth/Firebase auth, Dark mode, Figma     |
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** – you can use it for personal and commercial projects.
+- Researchers
+  - Upload light curves and metadata
+  - Train or fine-tune models; tweak hyperparameters
+  - Audit lineage; reproduce runs with versioned configs
 
 ---
 
-## 📧 Support
+## Data & Resources
 
-For more info or query, visit [AdminMart](https://adminmart.com).
+- NASA Missions: Kepler, K2, TESS (confirmed, candidates, false positives)
+- Methods: Detrending, normalization, gap handling, augmentation
+- Models: 1D CNNs/transformers for sequences; tree ensembles for tabular
+- Validation: Time-aware splits, mission-stratified folds, calibration checks
+- Explainability: Saliency on temporal windows; feature attribution for tabular features
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+---
+
+## Contributing
+
+We welcome issues, discussions, and PRs.  
+Please:
+- Open an issue describing the feature/bug
+- Link datasets and note licenses/provenance
+- Include reproducible steps, configs, and environment details
+
+---
+
+## License
+
+Unless specified otherwise, this project is released under the MIT License.  
+Check individual folders for additional licenses where applicable.
+
+---
+
+## Acknowledgments
+
+- University of Science, VNU-HCM—our home for interdisciplinary inspiration
+- NASA Space Apps Challenge, Earth Science Division
+- Kepler, K2, TESS teams and the open data community
+
+---
+
+## Contact
+
+Nguyen Ngoc Lam Huy  
+nnlhuy23@apcs.fitus.edu.vn
+
+Connect with #SpaceApps
