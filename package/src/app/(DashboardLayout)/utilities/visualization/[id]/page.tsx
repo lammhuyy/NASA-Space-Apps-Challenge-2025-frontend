@@ -3,7 +3,7 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sphere, Text } from "@react-three/drei";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as THREE from "three";
 import {
   Box,
@@ -11,13 +11,24 @@ import {
   Typography,
   Paper,
   IconButton,
-  Tooltip
+  Tooltip,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Chip
 } from "@mui/material";
 import {
   Help as HelpIcon,
   Settings as SettingsIcon,
   Fullscreen as FullscreenIcon,
-  Lightbulb as LightbulbIcon
+  Lightbulb as LightbulbIcon,
+  PlayArrow as PlayIcon,
+  VideoLibrary as VideoLibraryIcon,
+  Close as CloseIcon,
+  ArrowBack as ArrowBackIcon
 } from "@mui/icons-material";
 import { apiService } from "@/services/api";
 // -------------------
@@ -343,13 +354,18 @@ function UIControls({
   velocity,
   setVelocity,
   systemName,
-  planetCount
+  planetCount,
+  showVideoPanel,
+  setShowVideoPanel
 }: {
   velocity: number;
   setVelocity: (value: number) => void;
   systemName: string;
   planetCount: number;
+  showVideoPanel: boolean;
+  setShowVideoPanel: (show: boolean) => void;
 }) {
+  const router = useRouter();
   return (
     <>
       {/* Left Panel - System Info */}
@@ -367,6 +383,25 @@ function UIControls({
           border: '1px solid rgba(255, 255, 255, 0.1)'
         }}
       >
+        {/* Back Button */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Tooltip title="Back to Exoplanet Search">
+            <IconButton
+              onClick={() => router.push('/utilities/visualization')}
+              sx={{
+                color: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                },
+                mr: 1
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
         <Typography sx={{ color: 'white', fontSize: '28px', fontWeight: 'bold' }}>
           {systemName}
         </Typography>
@@ -457,6 +492,17 @@ function UIControls({
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+          <Tooltip title={showVideoPanel ? "Hide Video Panel" : "Show Video Panel"}>
+            <IconButton
+              sx={{
+                color: showVideoPanel ? '#1976d2' : 'white',
+                backgroundColor: showVideoPanel ? 'rgba(25, 118, 210, 0.2)' : 'transparent'
+              }}
+              onClick={() => setShowVideoPanel(!showVideoPanel)}
+            >
+              <VideoLibraryIcon />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Fullscreen">
             <IconButton sx={{ color: 'white' }}>
               <FullscreenIcon />
@@ -469,17 +515,266 @@ function UIControls({
 }
 
 // -------------------
+// Video Panel Component
+// -------------------
+function VideoPanel({
+  videos,
+  planets,
+  systemKepid,
+  velocity,
+  onClose
+}: {
+  videos: any[];
+  planets: any[];
+  systemKepid: string;
+  velocity: number;
+  onClose: () => void;
+}) {
+  const [isMinimized, setIsMinimized] = useState(false);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // Update video playback rates when velocity changes
+  useEffect(() => {
+    videoRefs.current.forEach((videoRef) => {
+      if (videoRef) {
+        videoRef.playbackRate = Math.max(0.1, Math.min(velocity, 5)); // Clamp between 0.1x and 5x
+      }
+    });
+  }, [velocity]);
+
+  // Function to match videos to planets based on KEPID and Kepler name format
+  const matchVideoToPlanet = (planet: any, kepid: string, planetIndex: number) => {
+    // Debug: Log the planet data to see what's available
+    console.log('🔍 Planet data for index', planetIndex, ':', planet);
+    console.log('🔍 Available fields:', Object.keys(planet));
+
+    // Extract the Kepler name and replace dashes with underscores
+    const keplerName = planet.name;
+    console.log('🔍 Kepler name found:', keplerName);
+
+    // If no Kepler name, try to generate one based on common patterns
+    let keplerNameFormatted = '';
+    if (keplerName) {
+      keplerNameFormatted = keplerName.replace(/-/g, '_').replace(/ /g, '_');
+      console.log('🔍 Formatted Kepler name:', keplerNameFormatted);
+    } else {
+      console.log('⚠️ No Kepler name found for planet', planetIndex);
+    }
+
+    // Create expected filename format: <kepid>_<kepler_name>.mp4
+    const expectedFilename = `${kepid}_${keplerNameFormatted}.mp4`;
+    console.log('🔍 Expected filename:', expectedFilename);
+
+    // Find matching video
+    const matchingVideo = videos.find(video => video.filename === expectedFilename);
+    console.log('🔍 Matching video found:', matchingVideo ? matchingVideo.filename : 'None');
+
+    return { matchingVideo: matchingVideo || null, expectedFilename };
+  };
+
+  // Generate video players based on planet data
+  const generateVideoPlayers = (): React.ReactElement[] => {
+    const players: React.ReactElement[] = [];
+
+    planets.forEach((planet, index) => {
+      const { matchingVideo, expectedFilename } = matchVideoToPlanet(planet, systemKepid, index);
+      const planetName = planet.name || `Planet ${index + 1}`;
+
+      players.push(
+        <Box
+          key={`video-${index}`}
+          sx={{
+            mb: 2,
+            p: 2,
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            borderRadius: 2,
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        >
+          <Typography
+            sx={{
+              color: 'white',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              mb: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
+          >
+            <PlayIcon sx={{ fontSize: '16px' }} />
+            {planetName}
+          </Typography>
+
+          {matchingVideo ? (
+            <>
+              <video
+                key={matchingVideo.filename}
+                ref={(el) => {
+                  videoRefs.current[index] = el;
+                }}
+                controls
+                autoPlay
+                muted
+                loop
+                style={{
+                  width: '100%',
+                  height: '150px',
+                  borderRadius: '8px',
+                  backgroundColor: '#000'
+                }}
+                onLoadedMetadata={(e) => {
+                  const video = e.target as HTMLVideoElement;
+                  video.playbackRate = Math.max(0.1, Math.min(velocity, 5));
+                }}
+              >
+                <source src={apiService.getVideoUrl(matchingVideo.filename)} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+
+              <Typography
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: '12px',
+                  mt: 1
+                }}
+              >
+                {(matchingVideo.size / (1024 * 1024)).toFixed(1)} MB
+              </Typography>
+            </>
+          ) : (
+            <Box
+              sx={{
+                width: '100%',
+                height: '150px',
+                borderRadius: '8px',
+                backgroundColor: '#333',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px dashed rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              <Typography
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontSize: '12px',
+                  textAlign: 'center'
+                }}
+              >
+                No video available
+                <br />
+                Expected: {expectedFilename}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      );
+    });
+
+    return players;
+  };
+
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        width: isMinimized ? 60 : 300,
+        height: isMinimized ? 60 : 600,
+        zIndex: 1000,
+        backgroundColor: 'rgba(25, 118, 210, 0.9)',
+        borderRadius: 2,
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 1.5,
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          cursor: 'pointer',
+          flexShrink: 0
+        }}
+        onClick={() => setIsMinimized(!isMinimized)}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <VideoLibraryIcon sx={{ color: 'white' }} />
+          {!isMinimized && (
+            <Typography sx={{ color: 'white', fontWeight: 'bold' }}>
+              LC Visualization ({planets.length})
+            </Typography>
+          )}
+        </Box>
+        <IconButton
+          size="small"
+          sx={{ color: 'white' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
+      {!isMinimized && (
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'auto',
+            p: 2,
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              borderRadius: '4px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              },
+            },
+          }}
+        >
+          {videos.length === 0 ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <VideoLibraryIcon sx={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '48px', mb: 2 }} />
+              <Typography sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>
+                No videos available
+              </Typography>
+            </Box>
+          ) : (
+            generateVideoPlayers()
+          )}
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+// -------------------
 // Main Visualization Component
 // -------------------
 export default function VisualizationPage() {
   const { id } = useParams();
   const [velocity, setVelocity] = useState(1);
-  const [systemName, setSystemName] = useState('Kepler-228');
-  const [planets, setPlanets] = useState([
-    { distance: 0.8, speed: 2, size: 0.08, color: "#4ecdc4", name: "Kepler-228 b" },
-    { distance: 1.2, speed: 1.5, size: 0.12, color: "#4ecdc4", name: "Kepler-228 c" },
-    { distance: 1.8, speed: 1, size: 0.1, color: "#4ecdc4", name: "Kepler-228 d" },
-  ]);
+  const [systemName, setSystemName] = useState('');
+  const [planets, setPlanets] = useState<any[]>([]);
+  const [videos, setVideos] = useState<any[]>([]);
+  const [showVideoPanel, setShowVideoPanel] = useState(false);
 
   useEffect(() => {
     const fetchSystemData = async () => {
@@ -562,8 +857,23 @@ export default function VisualizationPage() {
     fetchSystemData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        console.log('🎥 Fetching available videos...');
+        const videoList = await apiService.getVideos();
+        console.log('✅ Videos fetched:', videoList);
+        setVideos(videoList);
+      } catch (error) {
+        console.error('❌ Error fetching videos:', error);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
   return (
-    <Box sx={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <Box sx={{ position: 'relative', width: '90vw', height: '90vh', overflow: 'hidden', margin: '5vh auto' }}>
       <Canvas
         camera={{ position: [0, 5, 8], fov: 60 }}
         style={{ width: "100%", height: "100%", background: "#000011" }}
@@ -580,13 +890,13 @@ export default function VisualizationPage() {
         <CentralStar velocity={velocity} hostname={systemName} />
 
         {/* Orbital Paths */}
-        {planets.map((planet, index) => (
+        {planets.map((planet: any, index: number) => (
           <OrbitalPath key={index} radius={planet.distance} />
         ))}
 
 
         {/* Orbiting Planets */}
-        {planets.map((planet, index) => (
+        {planets.map((planet: any, index: number) => (
           <OrbitingPlanet
             key={index}
             distance={planet.distance}
@@ -615,7 +925,20 @@ export default function VisualizationPage() {
         setVelocity={setVelocity}
         systemName={systemName}
         planetCount={planets.length}
+        showVideoPanel={showVideoPanel}
+        setShowVideoPanel={setShowVideoPanel}
       />
+
+      {/* Video Panel */}
+      {showVideoPanel && (
+        <VideoPanel
+          videos={videos}
+          planets={planets}
+          systemKepid={id as string}
+          velocity={velocity}
+          onClose={() => setShowVideoPanel(false)}
+        />
+      )}
     </Box>
   );
 }

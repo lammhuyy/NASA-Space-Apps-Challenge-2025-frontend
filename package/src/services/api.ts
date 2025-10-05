@@ -8,11 +8,16 @@ export interface PlanetData {
     [key: string]: any;
 }
 
-export interface FindByHostnameResponse {
+export interface HostnameResult {
     hostname: string;
     kepid: number;
-    total_rows: number;
-    data: PlanetData[];
+    planet_count: number;
+}
+
+export interface FindByHostnameResponse {
+    search_term: string;
+    total_hostnames: number;
+    hostnames: HostnameResult[];
 }
 
 export interface FindByHostidResponse {
@@ -35,6 +40,17 @@ export interface HostnamesResponse {
 export interface HostidsResponse {
     total_ids: number;
     hostids: string[];
+}
+
+export interface VideoInfo {
+    filename: string;
+    title: string;
+    size: number;
+}
+
+export interface VideosResponse {
+    total_videos: number;
+    videos: VideoInfo[];
 }
 
 class ApiService {
@@ -126,7 +142,7 @@ class ApiService {
     }
 
     /**
-     * Find all rows with matching kepid based on the given hostname
+     * Find all rows with matching hostname
      */
     async findByHostname(hostname: string): Promise<FindByHostnameResponse> {
         return this.request<FindByHostnameResponse>(`/visualization/find_by_hostname/${encodeURIComponent(hostname)}`);
@@ -141,6 +157,21 @@ class ApiService {
      */
     async getLightcurve(starId: string, tceNum: string): Promise<LightcurveData> {
         return this.request<LightcurveData>(`/visualization/lightcurve/${encodeURIComponent(starId)}/${encodeURIComponent(tceNum)}`);
+    }
+
+    /**
+     * Get list of available videos
+     */
+    async getVideos(): Promise<VideoInfo[]> {
+        const response = await this.request<VideosResponse>('/visualization/videos');
+        return response.videos;
+    }
+
+    /**
+     * Get video URL for a specific filename
+     */
+    getVideoUrl(filename: string): string {
+        return `${this.baseURL}/visualization/videos/${encodeURIComponent(filename)}`;
     }
 }
 

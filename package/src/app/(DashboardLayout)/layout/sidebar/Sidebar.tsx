@@ -17,6 +17,7 @@ const MSidebar = ({
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
   const sidebarWidth = "270px";
+  const collapsedWidth = "0px";
 
   // Custom CSS for short scrollbar
   const scrollbarStyles = {
@@ -35,8 +36,9 @@ const MSidebar = ({
     return (
       <Box
         sx={{
-          width: sidebarWidth,
+          width: isSidebarOpen ? sidebarWidth : collapsedWidth,
           flexShrink: 0,
+          transition: 'width 0.3s ease',
         }}
       >
         {/* ------------------------------------------- */}
@@ -51,7 +53,8 @@ const MSidebar = ({
               sx: {
                 boxSizing: "border-box",
                 ...scrollbarStyles,
-                width: sidebarWidth,
+                width: isSidebarOpen ? sidebarWidth : collapsedWidth,
+                transition: 'width 0.3s ease',
               },
             }
           }}
@@ -69,7 +72,7 @@ const MSidebar = ({
               {/* ------------------------------------------- */}
               {/* Sidebar Items */}
               {/* ------------------------------------------- */}
-              <SidebarItems />
+              <SidebarItems isCollapsed={!isSidebarOpen} />
             </Box>
           </Box>
         </Drawer>
@@ -100,7 +103,7 @@ const MSidebar = ({
         {/* ------------------------------------------- */}
         {/* Sidebar Items */}
         {/* ------------------------------------------- */}
-        <SidebarItems />
+        <SidebarItems isCollapsed={!isSidebarOpen} />
       </Box>
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}

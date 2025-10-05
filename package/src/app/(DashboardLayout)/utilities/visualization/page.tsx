@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Sphere } from "@react-three/drei";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
-import { apiService } from "@/services/api";
+import { apiService, HostnameResult } from "@/services/api";
 import {
   Box,
   TextField,
@@ -70,7 +70,9 @@ function HostStars({ count = 2000 }) {
           onClick={async () => {
             // const randomId = Math.floor(Math.random() * 10000); // pick range you want
             const results = await apiService.getAllHostids();
-            const randomId = results[Math.floor(Math.random() * results.length)];
+            
+            // const randomId = results[Math.floor(Math.random() * results.length)];
+            const randomId = 10872983;
             router.push(`/utilities/visualization/${randomId}`);
           }}
         >
@@ -85,6 +87,7 @@ function HostStars({ count = 2000 }) {
 // Search Interface Component
 // -------------------
 function SearchInterface() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -223,19 +226,14 @@ function SearchInterface() {
             <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
               Search Results
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap', alignItems: 'center' }}>
               <Chip
-                label={`Hostname: ${searchResults.hostname}`}
+                label={`Search: ${searchResults.search_term}`}
                 size="small"
                 sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', color: 'white', fontWeight: 'bold' }}
               />
               <Chip
-                label={`KEPID: ${searchResults.kepid}`}
-                size="small"
-                sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', color: 'white', fontWeight: 'bold' }}
-              />
-              <Chip
-                label={`${searchResults.total_rows} rows`}
+                label={`${searchResults.total_hostnames} hostnames found`}
                 size="small"
                 sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', color: 'white', fontWeight: 'bold' }}
               />
@@ -243,32 +241,46 @@ function SearchInterface() {
           </Box>
 
           <List sx={{ maxHeight: 300, overflow: 'auto' }}>
-            {searchResults.data?.slice(0, 10).map((row: any, index: number) => (
-              <ListItem key={index} sx={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', flexDirection: 'column', alignItems: 'flex-start' }}>
-                {/* <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold', mb: 0.5 }}>
-                  Row {index + 1}
-                </Typography> */}
-                <Box sx={{ ml: 0 }}>
-                  {/* {row['Host Name'] && (
-                    <Typography variant="caption" component="div" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 0.25 }}>
-                      Host: {row['Host Name']}
+            {searchResults.hostnames?.map((hostnameResult: HostnameResult, index: number) => (
+              <ListItem
+                key={index}
+                sx={{
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  p: 2
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Box>
+                    <Typography variant="body1" sx={{ color: 'white', fontWeight: 'bold', mb: 0.5 }}>
+                      {hostnameResult.hostname}
                     </Typography>
-                  )} */}
-                  {row['kepoi_name'] && (
-                    <Typography variant="caption" component="div" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                      KOI Name: {row['kepoi_name']}
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      {hostnameResult.planet_count} {hostnameResult.planet_count === 1 ? 'orbiting planet' : 'orbiting planets'}
                     </Typography>
-                  )}
+                  </Box>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      router.push(`/utilities/visualization/${hostnameResult.kepid}`);
+                    }}
+                    sx={{
+                      backgroundColor: 'white',
+                      color: 'black',
+                      fontWeight: 'bold',
+                      minWidth: 100,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      },
+                    }}
+                  >
+                    Visualize
+                  </Button>
                 </Box>
               </ListItem>
             ))}
-            {searchResults.data?.length > 10 && (
-              <ListItem>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontStyle: 'italic' }}>
-                  ... and {searchResults.data.length - 10} more rows
-                </Typography>
-              </ListItem>
-            )}
           </List>
         </Paper>
       )}

@@ -67,13 +67,23 @@ const renderMenuItems = (items: any, pathDirect: any) => {
 };
 
 
-const SidebarItems = () => {
+interface SidebarItemsProps {
+  isCollapsed?: boolean;
+}
+
+const SidebarItems = ({ isCollapsed = false }: SidebarItemsProps) => {
   const pathname = usePathname();
   const pathDirect = pathname;
 
   return (
     < >
-      <MUI_Sidebar width={"100%"} showProfile={false} themeColor={"#5D87FF"} themeSecondaryColor={'#49beff'} >
+      <MUI_Sidebar
+        width={"100%"}
+        showProfile={false}
+        themeColor={"#5D87FF"}
+        themeSecondaryColor={'#49beff'}
+        collapsed={isCollapsed}
+      >
 
         {/* <Logo img='/images/logos/dark-logo.svg' component={Link} to="/" >Modernize</Logo> */}
         {/* <Logo img='/images/logos/logo_final.svg' component={Link} to="/" >Modernize</Logo> */}
